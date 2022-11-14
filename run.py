@@ -14,7 +14,7 @@ gross_salary = int(input("Enter your annual gross salary here:\n"))
 
 print("Do you contribute to any pension scheme?")
 pension = int(input("Enter your annual contributions here:\n"))
-    
+
 taxable_salary = (gross_salary - pension)
 print(f"Your taxable salary is {taxable_salary} €")
 
@@ -52,8 +52,18 @@ def prsi_taxes():
 
 def usc_taxes():
     global usc
+    first_band = 12012
+    second_band = first_band + 9283
+    third_band = second_band + 48749
 
-    usc = int(gross_salary * 0.10)
+    if gross_salary < first_band:
+        usc = int(gross_salary * 0.005)
+    elif gross_salary < second_band:
+        usc = int((first_band * 0.005) + ((gross_salary - first_band) * 0.02))
+    elif gross_salary < third_band:
+        usc = int((first_band * 0.005) + ((second_band - first_band) * 0.02) + ((gross_salary - second_band) * 0.045))   
+    else:
+        usc = int((first_band * 0.005) + ((second_band - first_band) * 0.02) + ((third_band - second_band) * 0.04) + ((gross_salary - third_band) * 0.08))
 
     print(f"You pay {usc} € USC")
     return usc
@@ -62,6 +72,8 @@ def usc_taxes():
 def calculate_total_taxes():
     total_taxes = int(paye) + int(prsi) + int(usc)
     print(f"You pay {total_taxes} € in taxes")
+    net_pay = gross_salary - total_taxes
+    print(f"You annual net pay is {net_pay} €")
 
 
 def main():
