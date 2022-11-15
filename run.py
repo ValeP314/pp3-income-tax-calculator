@@ -28,8 +28,11 @@ year = int(input("Enter the relevant tax year\n"))
 print("Please type in your annual gross salary:")
 gross_salary = int(input("Enter your annual gross salary here:\n"))
 
-# print("Do you have any dependants?")
-# dependants = input("True or False\n")
+print("Are you singularly or jointly assessed?")
+marital_status = input("Enter single or married:\n")
+
+print("Do you have any dependants?")
+dependants = input("True or False\n")
 
 print("Do you contribute to any pension scheme?")
 pension = int(input("Enter your annual contributions here:\n"))
@@ -37,6 +40,7 @@ pension = int(input("Enter your annual contributions here:\n"))
 taxable_salary = (gross_salary - pension)
 print(f"Your taxable salary is {taxable_salary} €")
 
+credit = 0
 paye = 0
 prsi = 0
 usc = 0
@@ -55,6 +59,28 @@ def select_year():
     # year_row = parameters_worksheet.row_values(x)
     # print(year_row)
     return x
+
+
+def tax_credits():
+    """
+    Calculates the tax credits according to marital status and dependants
+    """
+    global credit
+    select_year()
+
+    if marital_status == "single" and dependants is True:
+        credit = (int(parameters_worksheet.cell(x, 7).value) + 
+                  int(parameters_worksheet.cell(x, 9).value) + 
+                  int(parameters_worksheet.cell(x, 10).value))
+    elif marital_status == "single" and dependants is not True:
+        credit = (int(parameters_worksheet.cell(x, 7).value) + 
+                  int(parameters_worksheet.cell(x, 10).value))
+    elif marital_status == "married":
+        credit = (int(parameters_worksheet.cell(x, 8).value) + 
+                  int(parameters_worksheet.cell(x, 10).value))
+    else:
+        print("The input is not a valid status")
+    print(f"Your tax credits are {credit}")
 
 
 def paye_taxes():
@@ -146,6 +172,7 @@ def main():
     """
     Runs all program functions
     """
+    tax_credits()
     paye_taxes()
     prsi_taxes()
     usc_taxes()
