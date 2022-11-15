@@ -11,6 +11,7 @@ SCOPE = [
     "https://www.googleapis.com/auth/drive.file",
     "https://www.googleapis.com/auth/drive"
     ]
+
 CREDS = Credentials.from_service_account_file('creds.json')
 SCOPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
@@ -20,6 +21,9 @@ parameters_worksheet = SHEET.worksheet('parameters')
 
 # print("What is your name?")
 # full_name = input("Enter your full name here:\n")
+
+print("Please select the taxable year:")
+year = int(input("Enter the relevant tax year\n"))
 
 print("Please type in your annual gross salary:")
 gross_salary = int(input("Enter your annual gross salary here:\n"))
@@ -38,21 +42,40 @@ prsi = 0
 usc = 0
 
 
+def select_year():
+    global x
+
+    if year == 2022:
+        x = 2
+    elif year == 2023:
+        x = 3
+    else:
+        x = 4
+
+    # year_row = parameters_worksheet.row_values(x)
+    # print(year_row)
+    return x
+
+
 def paye_taxes():
     """
-    Calculates the PAYE taxes applicable to the taxable salary
+    Calculates the "Pay As You Earn" taxes applicable to the taxable salary
     """
     global paye
 
-    if taxable_salary < 40000:
+    select_year()
+
+    paye_year = int(parameters_worksheet.cell(x, 2).value)
+
+    if taxable_salary < paye_year:
         paye = taxable_salary * 0.20
-        
     else:
-        excess_paye = taxable_salary - 40000
-        first_band_paye_taxes = 40000 * 0.20
-        paye = int(first_band_paye_taxes + (excess_paye * 0.40))
-    
+        excess_paye = taxable_salary - paye_year
+        first_band_paye_taxes = paye_year * 0.20
+        paye = (first_band_paye_taxes + (excess_paye * 0.40))
+
     print(f"You pay {paye} € PAYE")
+    print(f"{paye_year}")
     return paye
 
 
@@ -62,34 +85,50 @@ def prsi_taxes():
     """
     global prsi
 
-    if gross_salary < 18304:
+    select_year()
+
+    prsi_year = int(parameters_worksheet.cell(x, 3).value)
+
+    if gross_salary < prsi_year:
         prsi = 0
     else:
         prsi = int(gross_salary * 0.04)
 
     print(f"You pay {prsi} € PRSI")
+    print(f"{prsi_year}")
     return prsi
 
 
 def usc_taxes():
     """
-    Calculates the USC taxes applicable to the gross salary
+    Calculates the Universal Social Charge, applicable to the gross salary
     """
     global usc
-    first_band = 12012
-    second_band = 22920
-    third_band = 70044
+
+    select_year()
+
+    usc_1_band = int(parameters_worksheet.cell(x, 4).value)
+    usc_2_band = int(parameters_worksheet.cell(x, 5).value)
+    usc_3_band = int(parameters_worksheet.cell(x, 6).value)
 
     if gross_salary < 13000:
         usc = 0
-    elif gross_salary < second_band:
-        usc = int((first_band * 0.005) + ((gross_salary - first_band) * 0.02))
-    elif gross_salary < third_band:
-        usc = int((first_band * 0.005) + ((second_band - first_band) * 0.02) + ((gross_salary - second_band) * 0.045))   
+    elif gross_salary < usc_2_band:
+        usc = int((usc_1_band * 0.005) + ((gross_salary - usc_1_band) * 0.02))
+    elif gross_salary < usc_3_band:
+        usc = int((usc_1_band * 0.005) +
+                  ((usc_2_band - usc_1_band) * 0.02) +
+                  ((gross_salary - usc_2_band) * 0.045))
     else:
-        usc = int((first_band * 0.005) + ((second_band - first_band) * 0.02) + ((third_band - second_band) * 0.045) + ((gross_salary - third_band) * 0.08))
+        usc = int((usc_1_band * 0.005) +
+                  ((usc_2_band - usc_1_band) * 0.02) +
+                  ((usc_3_band - usc_2_band) * 0.045) +
+                  ((gross_salary - usc_3_band) * 0.08))
 
     print(f"You pay {usc} € USC")
+    print(f"{usc_1_band}")
+    print(f"{usc_2_band}")
+    print(f"{usc_3_band}")
     return usc
 
 
@@ -98,9 +137,9 @@ def calculate_total_taxes():
     Adds the 3 contributions in order to calculate annual net pay
     """
     total_taxes = int(paye) + int(prsi) + int(usc)
-    print(f"You pay {total_taxes} € in taxes")
+    print(f"You pay a total of {total_taxes} € in taxes")
     net_pay = gross_salary - total_taxes
-    print(f"You annual net pay is {net_pay} €")
+    print(f"Your annual net pay is {net_pay} €")
 
 
 def main():
