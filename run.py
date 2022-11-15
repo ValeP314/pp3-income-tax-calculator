@@ -1,7 +1,22 @@
 # This tax income calculator will ask some general information,
 # in order to calculate the deductions applicable to our gross salary,
-# and return annual and monthly net salary, based on 2023 Budget.
+# and return annual, monthly and weekly net salary,
+# based on 2022 or 2023 Budget.
 
+import gspread
+from google.oauth2.service_account import Credentials
+
+SCOPE = [
+    "https://www.googleapis.com/auth/spreadsheets",
+    "https://www.googleapis.com/auth/drive.file",
+    "https://www.googleapis.com/auth/drive"
+    ]
+CREDS = Credentials.from_service_account_file('creds.json')
+SCOPED_CREDS = CREDS.with_scopes(SCOPE)
+GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
+SHEET = GSPREAD_CLIENT.open('tax_income_calculator')
+
+parameters_worksheet = SHEET.worksheet('parameters')
 
 # print("What is your name?")
 # full_name = input("Enter your full name here:\n")
