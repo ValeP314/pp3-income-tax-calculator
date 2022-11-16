@@ -1,33 +1,11 @@
-
-## Reminders
-
-* Your dependencies must be placed in the `requirements.txt` file
-* Do not edit any of the other files or your code may not deploy properly
-
-## Creating the Heroku app
-
-When you create the app, you will need to add two buildpacks from the _Settings_ tab. The ordering is as follows:
-
-1. `heroku/python`
-2. `heroku/nodejs`
-
-You must then create a _Config Var_ called `PORT`. Set this to `8000`
-
-If you have credentials, such as in the Love Sandwiches project, you must create another _Config Var_ called `CREDS` and paste the JSON into the value field.
-
-Connect your GitHub repository and deploy as normal.
-
-
-
-
 # The Tax Income Calculator
 
-The purpose of this project is to build a front-end site. The site should respond to the users' actions, allowing users to actively engage with data, alter the way the site displays the information to achieve their preferred goals. 
+The purpose of this project is to build a web application using Python. The site should respond to the users' actions, allowing users to actively engage with data, alter the way the site displays the information to achieve their preferred goals. 
 
 
-I decided to create an interactive app, that allows you to be in charge of your salary and taxes. It is possible to select the tax year (between 2022 and 2023) and check the individual deductions, the total deductions and the net pay. 
+I decided to create an interactive application, that allows you to be in charge of your salary and taxes. It is possible to select the tax year (between 2022 and 2023) and check the individual deductions, the total deductions and the net pay. 
 The net pay is also manipulated in order to get an annual earning value along with more immediate (and possibly meaningful) monthly and weekly values.
-This app is developed using Python.
+This app is developed using Python and is deployed in Heroku.
 
 ## Project Inspiration
 The idea comes from the need of understanding better my payslip, especially since the new 2023 Budget has been released.
@@ -56,6 +34,7 @@ The following flowchart supported me in designing the final output of the applic
 ### Features Left to Implement
 
 - The Google sheet will be easy to implement whenever the 2024 Budget will become available. This can be done by appending a row to the information already present in the worksheet, or directly adding the new band values onto the worksheet itself.
+- In order to provide a better experience, it would be beneficial to implement some HTML and CSS features to create a user-friendly interface.
     
 
 ## Testing 
@@ -71,7 +50,7 @@ The following flowchart supported me in designing the final output of the applic
 
 
 ### Fixed Bugs
-- Some calculations were longer than the 79 characters allowed in PEP8, so I researched on best practices  
+- Some calculations were longer than the 79 characters allowed in PEP8, so I researched on best practices and learned how to break the lines in the correct way.
 
 
 ### Unfixed Bugs
@@ -79,13 +58,21 @@ None
 
 ## Deployment
 
-- The site was deployed to GitHub pages. The steps to deploy are as follows: 
-  - In the GitHub repository, navigate to the Settings tab.
-  - From the menu, select Pages.
-  - From the Branch section drop-down menu, select the Main Branch.
-  - Once the main branch has been selected, the page will be automatically refreshed with a detailed ribbon display to indicate the successful deployment. 
+- The site was deployed to Heroku. The steps to deploy are as follows: 
+  - In the dashboard, create a new app and name it with a unique name.
+  - Select the region (Europe) and press Create.
+  - In the Settings tab, create a Config Var called CREDS and paste the JSON into the value field, to store sensitive data.
+  - Create a new Config Var called PORT and add 8000 in the value field.
+  - Add two buildpacks from the Settings tab. They must be ordered as follows:
+    1. heroku/python
+    2. heroku/nodejs
+  - In the Deploy tab, select Github as deploy method and connect it to Github.
+  - Search for the relevant repository and then clck connect.
+  - Set up automatic or manual deployment.
+  - Wait while the app is being build, and all packages are being installed. 
+  - Finally, the “App was  successfully deployed” message will show on screen, together with a button to take us to our deployed  link. 
 
-  The live link can be found here - [The Daisy Game](https://valep314.github.io/pp2-daisy/)
+  The live link can be found here - [The Tax Income Calculator](https://tax-income-calculator.herokuapp.com/)
 
 
 ## Credits  

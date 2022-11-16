@@ -38,7 +38,6 @@ print("Do you contribute to any pension scheme?")
 pension = int(input("Enter your annual contributions here:\n"))
 
 taxable_salary = (gross_salary - pension)
-print(f"Your taxable salary is {taxable_salary} €")
 
 credit = 0
 paye = 0
@@ -69,14 +68,14 @@ def tax_credits():
     select_year()
 
     if marital_status == "single" and dependants is True:
-        credit = (int(parameters_worksheet.cell(x, 7).value) + 
-                  int(parameters_worksheet.cell(x, 9).value) + 
+        credit = (int(parameters_worksheet.cell(x, 7).value) +
+                  int(parameters_worksheet.cell(x, 9).value) +
                   int(parameters_worksheet.cell(x, 10).value))
     elif marital_status == "single" and dependants is not True:
-        credit = (int(parameters_worksheet.cell(x, 7).value) + 
+        credit = (int(parameters_worksheet.cell(x, 7).value) +
                   int(parameters_worksheet.cell(x, 10).value))
     elif marital_status == "married":
-        credit = (int(parameters_worksheet.cell(x, 8).value) + 
+        credit = (int(parameters_worksheet.cell(x, 8).value) +
                   int(parameters_worksheet.cell(x, 10).value))
     else:
         print("The input is not a valid status")
@@ -160,23 +159,52 @@ def usc_taxes():
 
 def calculate_total_taxes():
     """
-    Adds the 3 contributions in order to calculate annual net pay
+    Adds the 3 contributions in order to calculate annual, monthly
+    and weekly net pay
     """
     total_taxes = int(paye) + int(prsi) + int(usc)
-    print(f"You pay a total of {total_taxes} € in taxes")
+    print(f"You pay a total of {total_taxes}€ in taxes")
+    print("")
+    print("-----------------------------------------------------------------")
+    print("")
     net_pay = gross_salary - total_taxes
-    print(f"Your annual net pay is {net_pay} €")
+    print(f"Your annual net pay is {net_pay}€")
+    print("")
+    monthly_pay = int(net_pay / 12)
+    print(f"Your monthly net pay is {monthly_pay}€")
+    print("")
+    weekly_pay = int(net_pay / 52)
+    print(f"Your weekly net pay is {weekly_pay}€")
 
 
 def main():
     """
     Runs all program functions
     """
+    print("")
+    print("=================================================================")
+    print("Welcome to the 2023 Irish Tax Income Calculator")
+    print("=================================================================")
+    print("")
+    select_year()
+    print("")
+    print(f"Your annual gross salary in {year} is {gross_salary}€")
+    print("")
+    print(f"Your annual contribution is {pension}€")
+    print("")
+    print(f"Your taxable salary is {taxable_salary}€")
+    print("")
     tax_credits()
+    print("")
     paye_taxes()
+    print("")
     prsi_taxes()
+    print("")
     usc_taxes()
+    print("")
     calculate_total_taxes()
+    print("")
+    print("=================================================================")
 
 
 main()
