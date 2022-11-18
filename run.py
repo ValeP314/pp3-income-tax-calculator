@@ -21,15 +21,23 @@ parameters_worksheet = SHEET.worksheet('parameters')
 
 
 def select_year(year_input):
-    if year_input == 2022:
-        cell = 2
-    elif year_input == 2023:
-        cell = 3
-    else:
-        cell = 4
 
-    # year_row = parameters_worksheet.row_values(x)
-    # print(year_row)
+    # print("Please select the taxable year:")
+    # year_input = int(input("Enter 2022 0r 2023\n"))
+
+    taxable_year = year_input
+
+    while True:
+        if taxable_year == 2022:
+            cell = 2
+            break
+        elif taxable_year == 2023:
+            cell = 3
+            break
+        else:
+            print("Please select one of the options provided")
+            break
+        
     return cell
 
 
@@ -118,7 +126,7 @@ def usc_taxes(gross_salary, cell):
                   ((usc_3_band - usc_2_band) * 0.045) +
                   ((gross_salary - usc_3_band) * 0.08))
 
-    print(f"USC = {usc} € USC")
+    print(f"USC = {usc}€")
 
     return usc, cell
 
@@ -153,7 +161,6 @@ def main():
     """
     # parameters_worksheet = SHEET.worksheet('parameters')
 
-    x = 0
     credit = 0
     paye = 0
     prsi = 0
@@ -166,7 +173,7 @@ def main():
     print("")
 
     print("Please select the taxable year:")
-    year_input = int(input("Enter 2022 0r 2023\n"))
+    year_input = int(input("Enter 2022 or 2023\n"))
 
     print("Please type in your annual gross salary:")
     gross_salary = int(input("Enter your annual gross salary here:\n"))
@@ -183,7 +190,7 @@ def main():
     taxable_salary = (gross_salary - pension)
 
     select_year(year_input)
-
+    
     cell = select_year(year_input)
 
     print("")
@@ -208,7 +215,7 @@ def main():
     print("")
     total_taxes = calculate_total_taxes(paye_calc, prsi_calc, usc_calc,
                                         credit_calc, gross_salary)
-    # print("")
+    print("")
     print("=================================================================")
 
 
