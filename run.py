@@ -25,52 +25,57 @@ def select_year(year_input):
     # print("Please select the taxable year:")
     # year_input = int(input("Enter 2022 0r 2023\n"))
 
-    taxable_year = year_input
+    # taxable_year = year_input
 
-    while True:
-        if taxable_year == 2022:
-            cell = 2
-            break
-        elif taxable_year == 2023:
-            cell = 3
-            break
-        else:
-            print("Please select one of the options provided")
-            break
-        
-    return cell
+    if year_input == 2022:
+        ref_cell = 2
+    elif year_input == 2023:
+        ref_cell = 3
+
+    # return cell
 
 
-def tax_credits(marital_status, dependants, cell):
+def tax_credits(marital_status, ref_cell):
     """
     Calculates the tax credits according to marital status and dependants
     """
+    if marital_status == 1:
+        credit = (parameters_worksheet.cell(ref_cell, 7).value +
+                 (parameters_worksheet.cell(ref_cell, 9).value) +
+                 (parameters_worksheet.cell(ref_cell, 10).value))
+        return ref_cell
 
-    if marital_status == "single":
-        if dependants is True:
-            credit = (int(parameters_worksheet.cell(cell, 7).value) +
-                      int(parameters_worksheet.cell(cell, 9).value) +
-                      int(parameters_worksheet.cell(cell, 10).value))
-        else:
-            credit = (int(parameters_worksheet.cell(cell, 7).value) +
-                      int(parameters_worksheet.cell(cell, 10).value))
-    elif marital_status == "married":
-        credit = (int(parameters_worksheet.cell(cell, 8).value) +
-                  int(parameters_worksheet.cell(cell, 10).value))
+    elif marital_status == 2:
+        credit = (parameters_worksheet.cell(ref_cell, 8).value +
+                  parameters_worksheet.cell(ref_cell, 10).value)
+        return ref_cell
+        
+    elif marital_status == 3:
+        credit = (parameters_worksheet.cell(ref_cell, 8).value +
+                  parameters_worksheet.cell(ref_cell, 10).value)
+        return ref_cell
+        
+    elif marital_status == 4:
+        credit = (parameters_worksheet.cell(ref_cell, 7).value +
+                 parameters_worksheet.cell(ref_cell, 10).value)
+        return ref_cell
+
     else:
         credit = 0
         print("The status input is not valid.")
+        return ref_cell
 
     print("")
     print(f"Your tax credits are {credit}€")
-    return credit, cell
+    return credit
 
 
-def paye_taxes(taxable_salary, credit, cell):
+def paye_taxes(taxable_salary, credit, ref_cell):
     """
     Calculates the "Pay As You Earn" taxes applicable to the taxable salary
     """
-    paye_year = int(parameters_worksheet.cell(cell, 2).value)
+    # cell = int(cell)
+    paye_year = int(parameters_worksheet.cell(ref_cell, 2).value)
 
     if taxable_salary < paye_year:
         paye = taxable_salary * 0.20
@@ -83,10 +88,10 @@ def paye_taxes(taxable_salary, credit, cell):
     print("-----------------------------------------------------------------")
     print("")
     print(f"PAYE = {paye}€")
-    return paye, cell
+    return paye, ref_cell
 
 
-def prsi_taxes(gross_salary, cell):
+def prsi_taxes(gross_salary, ref_cell):
     """
     Calculates the PRSI taxes applicable to the gross salary
     """
@@ -100,17 +105,17 @@ def prsi_taxes(gross_salary, cell):
 
     print(f"PRSI = {prsi}€")
 
-    return prsi, cell
+    return prsi, ref_cell
 
 
-def usc_taxes(gross_salary, cell):
+def usc_taxes(gross_salary, ref_cell):
     """
     Calculates the Universal Social Charge, applicable to the gross salary
     """
 
-    usc_1_band = int(parameters_worksheet.cell(cell, 4).value)
-    usc_2_band = int(parameters_worksheet.cell(cell, 5).value)
-    usc_3_band = int(parameters_worksheet.cell(cell, 6).value)
+    usc_1_band = int(parameters_worksheet.cell(ref_cell, 4).value)
+    usc_2_band = int(parameters_worksheet.cell(ref_cell, 5).value)
+    usc_3_band = int(parameters_worksheet.cell(ref_cell, 6).value)
 
     if gross_salary < 13000:
         usc = 0
@@ -128,7 +133,7 @@ def usc_taxes(gross_salary, cell):
 
     print(f"USC = {usc}€")
 
-    return usc, cell
+    return usc, ref_cell
 
 
 def calculate_total_taxes(paye_calc, prsi_calc, usc_calc, credit_calc,
@@ -152,8 +157,6 @@ def calculate_total_taxes(paye_calc, prsi_calc, usc_calc, credit_calc,
     weekly_pay = int(net_pay / 52)
     print(f"Your weekly net pay is {weekly_pay}€")
 
-    return
-
 
 def main():
     """
@@ -172,26 +175,63 @@ def main():
     print("=================================================================")
     print("")
 
-    print("Please select the taxable year:")
-    year_input = int(input("Enter 2022 or 2023\n"))
+    while True: 
+        print("Please select the taxable year:")
+        year_input = input("Enter 2022 or 2023\n").strip()
 
-    print("Please type in your annual gross salary:")
-    gross_salary = int(input("Enter your annual gross salary here:\n"))
+        if year_input not in ['2022', '2023']:
+            print("Please enter 2022 or 2023.")
+            continue
 
-    print("Are you singularly or jointly assessed?")
-    marital_status = input("Enter single or married:\n")
+        else:
+            break
 
-    print("Do you have any dependants?")
-    dependants = input("True or False\n")
+    while True:    
+        print("Please type in your annual gross salary:")
+        gross_salary = input("Enter your annual gross salary here:\n").strip()
+        
+        if not gross_salary.isdigit():
+            print("Please enter a number.")
+            continue
 
-    print("Do you contribute to any pension scheme?")
-    pension = int(input("Enter your annual contributions here:\n"))
+        else:
+            gross_salary = int(gross_salary)
+            break
+
+    while True:
+        print("What is your marital status?")
+        print("Please type in 1 for single.")
+        print("Please type in 2 for married on one income.")
+        print("Please type in 3 for married on two incomes.")
+        print("Please type in 4 for single with dependants.")
+        marital_status = input("Enter your marital status here:\n")
+
+        if marital_status not in ['1', '2', '3', '4']:
+            print("Please enter 1, 2, 3 or 4.")
+            continue
+
+        else:
+            break
+
+
+    # print("Do you have any dependants?")
+    # dependants = input("True or False\n")
+
+    while True: 
+        print("Do you contribute to any pension scheme?")
+        pension = input("Enter your annual contributions here:\n")
+
+        if not pension.isdigit():
+            print("Please enter a number.")
+            continue
+
+        else:
+            pension = int(pension)
+            break
 
     taxable_salary = (gross_salary - pension)
 
-    select_year(year_input)
-    
-    cell = select_year(year_input)
+    ref_cell = select_year(year_input)
 
     print("")
     print("-----------------------------------------------------------------")
@@ -203,15 +243,15 @@ def main():
     print(f"Your taxable salary is {taxable_salary}€")
     print("")
     # tax_credits(marital_status, dependants, cell)
-    credit_calc = tax_credits(marital_status, dependants, cell)
+    credit_calc = tax_credits(marital_status, ref_cell)
     # paye_taxes(taxable_salary, cell)
-    paye_calc = paye_taxes(taxable_salary, credit, cell)
+    paye_calc = paye_taxes(taxable_salary, credit, ref_cell)
     print("")
     # prsi_taxes(gross_salary, cell)
-    prsi_calc = prsi_taxes(gross_salary, cell)
+    prsi_calc = prsi_taxes(gross_salary, ref_cell)
     print("")
     # usc_taxes(gross_salary, cell)
-    usc_calc = usc_taxes(gross_salary, cell)
+    usc_calc = usc_taxes(gross_salary, ref_cell)
     print("")
     total_taxes = calculate_total_taxes(paye_calc, prsi_calc, usc_calc,
                                         credit_calc, gross_salary)
