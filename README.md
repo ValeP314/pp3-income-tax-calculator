@@ -10,13 +10,6 @@ This app is developed using Python and is deployed in Heroku.
 ## Project Inspiration
 The idea comes from the need of understanding better my payslip, especially since the new 2023 Budget has been released.
 
-![MockUp](./assets/images/...)
-
-
-## Flowchart
-The following flowchart supported me in designing the final output of the application, as help me in keeping track of al the parameters I needed to factor in:
-
-![Flowchart](./assets/images/...)
 
 ## Features
 
@@ -45,8 +38,8 @@ The following flowchart supported me in designing the final output of the applic
 
 ### Validator Testing 
 
-- Python
-  - 
+- CI Python Linter:
+  - The CI Python Linter returned no errors.
 
 
 ### Fixed Bugs
@@ -84,11 +77,6 @@ None
 - Inspiration on the main contents of this project came from this video from [Girl Coder](https://www.usandopy.com/en/tutorial/exercise-1-build-a-salary-calculator-in-python/).
 - [Stackoverflow](https://stackoverflow.com/) was consulted regularly for tips on general coding. 
 - All tax bands are actual and updated, and were taken from [Revenue](https://www.revenue.ie/en/personal-tax-credits-reliefs-and-exemptions/tax-relief-charts/index.aspx) or [Citizen Information](https://www.citizensinformation.ie/en/money_and_tax/budgets/budget_2023.html).
-
-
-### Acknowledgment
-
-
 
 
 ### Disclaimer
